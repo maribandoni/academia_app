@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'pages/login_page.dart';
+import 'theme/app_colors.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,13 +17,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFFFD700),
+          seedColor: AppColors.purple,
           brightness: Brightness.dark,
         ),
-        scaffoldBackgroundColor: const Color(0xFF0A0A0C),
+        scaffoldBackgroundColor: AppColors.background,
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF0A0A0C),
-          foregroundColor: Color(0xFFFFD700),
+          backgroundColor: AppColors.background,
+          foregroundColor: AppColors.purple,
         ),
       ),
       home: const LoginPage(),

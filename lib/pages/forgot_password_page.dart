@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../theme/app_colors.dart';
+import '../utils/feedback.dart';
+import '../utils/validators.dart';
+import '../widgets/app_text_field.dart';
+import '../widgets/purple_button.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -11,17 +16,13 @@ class ForgotPasswordPage extends StatefulWidget {
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
-  static const Color goldColor = Color(0xFFFFD700);
 
   void _recoverPassword() {
-    if (_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Solicitação de recuperação registrada.'),
-          backgroundColor: Colors.green,
-        ),
-      );
-    }
+    if (!_formKey.currentState!.validate()) return;
+    showFeedback(
+      context,
+      'Solicitação de recuperação realizada. Verifique seu e-mail.',
+    );
   }
 
   @override
@@ -33,18 +34,19 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0A0C),
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: goldColor),
+          tooltip: 'Voltar',
+          icon: const Icon(Icons.arrow_back, color: AppColors.purple),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 32),
+          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 32),
           child: Form(
             key: _formKey,
             child: Column(
@@ -53,7 +55,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 Text(
                   'RECUPERAR SENHA',
                   style: GoogleFonts.montserrat(
-                    color: goldColor,
+                    color: AppColors.purple,
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
@@ -64,54 +66,28 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   style: TextStyle(color: Colors.white70, fontSize: 14),
                 ),
                 const SizedBox(height: 32),
-                TextFormField(
+                AppTextField(
                   controller: _emailController,
-                  style: const TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    labelText: 'E-mail cadastrado',
-                    labelStyle: const TextStyle(color: Colors.white70),
-                    prefixIcon: const Icon(Icons.email, color: goldColor),
-                    filled: true,
-                    fillColor: const Color(0xFF18181C),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.white24),
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: goldColor, width: 2),
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Informe o e-mail';
-                    }
-                    if (!RegExp(
-                      r'^[^@]+@[^@]+\.[^@]+$',
-                    ).hasMatch(value.trim())) {
-                      return 'E-mail inválido';
-                    }
-                    return null;
-                  },
+                  label: 'E-mail cadastrado',
+                  icon: Icons.email,
+                  keyboardType: TextInputType.emailAddress,
+                  validator: Validators.email,
                 ),
                 const SizedBox(height: 24),
-                SizedBox(
-                  width: double.infinity,
-                  height: 54,
-                  child: ElevatedButton(
-                    onPressed: _recoverPassword,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: goldColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
+                GoldButton(
+                  label: 'RECUPERAR SENHA',
+                  fontSize: 16,
+                  onPressed: _recoverPassword,
+                ),
+                const SizedBox(height: 16),
+                Center(
+                  child: TextButton(
+                    onPressed: () => Navigator.pop(context),
                     child: const Text(
-                      'ENVIAR INSTRUÇÕES',
+                      'Voltar ao login',
                       style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                        color: AppColors.purple,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),

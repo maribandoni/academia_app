@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/usuario_model.dart';
 import '../models/user_repository.dart';
+import '../utils/feedback.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key, required this.user});
@@ -34,12 +35,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       bio: _bioController.text,
     );
     if (!updated) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Este nome de usuário já está em uso.'),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
+      showFeedback(context, 'Este nome de usuário já está em uso.', error: true);
       return;
     }
 

@@ -4,6 +4,8 @@ import '../models/user_repository.dart';
 import '../models/workout_model.dart';
 import 'login_page.dart';
 import 'profile_page.dart';
+import '../theme/app_colors.dart';
+import '../utils/feedback.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.user});
@@ -15,7 +17,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  static const Color goldColor = Color(0xFFFFD700);
   late UserModel _user;
   late final List<WorkoutModel> _workouts;
 
@@ -27,7 +28,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _addWorkout() async {
-    final controller = TextEditingController();
+    var enteredTitle = '';
     final formKey = GlobalKey<FormState>();
     final title = await showDialog<String>(
       context: context,
@@ -36,9 +37,9 @@ class _HomePageState extends State<HomePage> {
         content: Form(
           key: formKey,
           child: TextFormField(
-            controller: controller,
             autofocus: true,
             textCapitalization: TextCapitalization.sentences,
+            onChanged: (value) => enteredTitle = value,
             decoration: const InputDecoration(
               labelText: 'Ex.: treino de pernas',
             ),
@@ -47,7 +48,7 @@ class _HomePageState extends State<HomePage> {
                 : null,
             onFieldSubmitted: (_) {
               if (formKey.currentState!.validate()) {
-                Navigator.pop(dialogContext, controller.text.trim());
+                Navigator.pop(dialogContext, enteredTitle.trim());
               }
             },
           ),
@@ -60,7 +61,7 @@ class _HomePageState extends State<HomePage> {
           FilledButton(
             onPressed: () {
               if (formKey.currentState!.validate()) {
-                Navigator.pop(dialogContext, controller.text.trim());
+                Navigator.pop(dialogContext, enteredTitle.trim());
               }
             },
             child: const Text('ADICIONAR'),
@@ -68,13 +69,10 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
-    controller.dispose();
     if (!mounted || title == null) return;
 
     setState(() => _workouts.insert(0, WorkoutModel(title: title)));
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Treino registrado com sucesso.')),
-    );
+    showFeedback(context, 'Treino registrado com sucesso.');
   }
 
   Future<void> _openProfile() async {
@@ -130,7 +128,7 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _addWorkout,
-        backgroundColor: goldColor,
+        backgroundColor: AppColors.purple,
         foregroundColor: Colors.black,
         icon: const Icon(Icons.add),
         label: const Text('REGISTRAR TREINO'),
@@ -145,9 +143,9 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'BOM TREINO, $firstName',
+                    'Bom Treino, $firstName',
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      color: goldColor,
+                      color: AppColors.purple,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -161,13 +159,13 @@ class _HomePageState extends State<HomePage> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF18181C),
+                      color: AppColors.surface,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: Colors.white12),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.fitness_center, color: goldColor),
+                        const Icon(Icons.fitness_center, color: AppColors.purple),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
@@ -186,7 +184,7 @@ class _HomePageState extends State<HomePage> {
                   const Text(
                     'MEUS TREINOS',
                     style: TextStyle(
-                      color: goldColor,
+                      color: AppColors.purple,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 1.4,
                     ),
@@ -225,11 +223,11 @@ class _HomePageState extends State<HomePage> {
                       itemBuilder: (context, index) {
                         final workout = _workouts[index];
                         return Card(
-                          color: const Color(0xFF18181C),
+                          color: AppColors.surface,
                           child: ListTile(
                             leading: Checkbox(
                               value: workout.isCompleted,
-                              activeColor: goldColor,
+                              activeColor: AppColors.purple,
                               onChanged: (value) => setState(
                                 () => workout.isCompleted = value ?? false,
                               ),
@@ -245,8 +243,10 @@ class _HomePageState extends State<HomePage> {
                             subtitle: Text(_formatDate(workout.createdAt)),
                             trailing: IconButton(
                               tooltip: 'Remover treino',
-                              onPressed: () =>
-                                  setState(() => _workouts.removeAt(index)),
+                              onPressed: () {
+                                setState(() => _workouts.removeAt(index));
+                                showFeedback(context, 'Treino removido.');
+                              },
                               icon: const Icon(Icons.delete_outline),
                             ),
                           ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../models/usuario_model.dart';
 import 'edit_profile_page.dart';
+import '../theme/app_colors.dart';
+import '../utils/feedback.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key, required this.user, required this.onLogout});
@@ -28,6 +30,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
     if (!mounted || updatedUser == null) return;
     setState(() => _user = updatedUser);
+    showFeedback(context, 'Dados atualizados com sucesso.');
   }
 
   @override
@@ -56,7 +59,7 @@ class _ProfilePageState extends State<ProfilePage> {
             const Center(
               child: CircleAvatar(
                 radius: 58,
-                backgroundColor: Color(0xFFFFD700),
+                backgroundColor: AppColors.purple,
                 backgroundImage: AssetImage('assets/logo_gym.jpg'),
               ),
             ),
@@ -74,14 +77,14 @@ class _ProfilePageState extends State<ProfilePage> {
             Center(
               child: Text(
                 '@${_user.username}',
-                style: const TextStyle(color: Color(0xFFFFD700), fontSize: 16),
+                style: const TextStyle(color: AppColors.purple, fontSize: 16),
               ),
             ),
             const SizedBox(height: 24),
             Container(
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
-                color: const Color(0xFF18181C),
+                color: AppColors.surface,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Colors.white12),
               ),
@@ -91,7 +94,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   const Text(
                     'SOBRE MIM',
                     style: TextStyle(
-                      color: Color(0xFFFFD700),
+                      color: AppColors.purple,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 1.2,
                     ),
